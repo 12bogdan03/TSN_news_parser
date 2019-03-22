@@ -42,12 +42,10 @@ class NewsSpider(scrapy.Spider):
         summary = response.css('div.o-cmr.u-content-read.js-select-bar-wrap >'
                                ' p::text').extract_first()
         raw_content = ' '.join(
-            response.css('div.o-cmr.u-content-read.js-select-bar-wrap >'
-                         ' div > p').extract()
+            response.css('div.u-pos-r > article > div > p').extract()
         )
         content = self.clean_content(raw_content)
-        head = '. '.join((item['title'], summary))
-        item['text'] = ' '.join((head, content))
+        item['text'] = ' '.join((summary, content)) if summary and content else content
         if item['topic'] and item['topic'].lower() in self.allowed_topics:
             yield item
 
